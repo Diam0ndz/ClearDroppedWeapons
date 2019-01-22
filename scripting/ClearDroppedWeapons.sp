@@ -23,6 +23,8 @@ public Plugin myinfo =
 	url = "https://steamcommunity.com/id/diam0ndz"
 };
 
+int weaponParent;
+
 public void OnPluginStart()
 {
 	g_Game = GetEngineVersion();
@@ -31,10 +33,17 @@ public void OnPluginStart()
 		SetFailState("This plugin is for CSGO/CSS only.");	
 	}
 	
+	weaponParent = FindSendPropInfo("CBaseCombatWeapon", "m_hOwnerEntity");
+
 	HookEvent("round_poststart", Event_RoundPostStart);
 }
 
 public Action Event_RoundPostStart(Event event, const char[] name, bool dontBroadcast)
+{
+	CreateTimer(1.0, ClearGround);
+}
+
+public Action ClearGround(Handle timer)
 {
 	int maxEntities = GetMaxEntities();
 	char weapon[64];
@@ -44,7 +53,7 @@ public Action Event_RoundPostStart(Event event, const char[] name, bool dontBroa
 		if(IsValidEdict(i))
 		{
 			GetEdictClassname(i, weapon, sizeof(weapon));
-			if(strcmp(weapon, "weapon", false) == 0)
+			if((StrContains(weapon, "weapon_", false) != -1 || StrContains(weapon, "item_", false) != -1) && GetEntDataEnt2(i, weaponParent) == -1)
 			{
 				AcceptEntityInput(i, "Kill");
 			}
