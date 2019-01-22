@@ -37,16 +37,16 @@ public void OnPluginStart()
 public Action Event_RoundPostStart(Event event, const char[] name, bool dontBroadcast)
 {
 	int maxEntities = GetMaxEntities();
-	char weapName[64];
+	char weapon[64];
 	
 	for (int i = 0; i < maxEntities; i++)
 	{
 		if(IsValidEdict(i))
 		{
-			GetEdictClassname(i, weapName, sizeof(weapName));
-			if(strcmp(weapName, "weapon", false) == 0)
+			GetEdictClassname(i, weapon, sizeof(weapon));
+			if(strcmp(weapon, "weapon", false) == 0)
 			{
-				RemoveEdict(i);
+				AcceptEntityInput(i, "Kill");
 			}
 		}
 	}
